@@ -1,10 +1,10 @@
 # Dots and Templates
-Repository where I will save all my configurations files, templates and configs for different programs and projects I use.
+Repository where I will save all my configurations files, templates and configs for various tools and projects.
 
 ## Directories
-- [Vim](./vim) My personal vim config.
-- [Rust](./rust/) All my config and templates related with rust development.
-- [c++](./cpp/) All my config and templates related with c++ development.
+- [vim](./vim) My personal vim config.
+- [rust](./rust/) All my config and templates related to rust development.
+- [cpp](./cpp/) All my config and templates related to c++ development.
 - [git](./git/) Miscellaneous projects templates.
 
 ## License
