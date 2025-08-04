@@ -8,4 +8,4 @@ Repository where I will save all my configurations files, templates and configs 
 - [git](./git/) Miscellaneous projects templates.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](LICENSE)
