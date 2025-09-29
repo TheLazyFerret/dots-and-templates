@@ -32,7 +32,7 @@ it is too short for long declarations, especially when namespace resolutions are
 Therefore, the soft column cap is 100 characters. The strict column cap is 120 characters.
 
 ## COMMENTS
-All files must include a header comments, with the next fields:
+All files must include a [header comments](cpp/header_comment.hpp), with the next fields:
 - FileName
 - Author
 - Copyright
