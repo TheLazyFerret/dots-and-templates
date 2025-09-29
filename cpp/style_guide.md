@@ -15,7 +15,7 @@ Therefore, I will continue to update this guide as I learn more or find better o
 |Template implementation file|`.tpp`|
 
 Avoid the usage of tpp files, 
-instead put all the template implementation inside the hpp
+instead put all the template implementation inside the hpp.
 
 ## NAMING
 |Item|Case|
@@ -28,6 +28,7 @@ instead put all the template implementation inside the hpp
 |Functions|`snake_case`|
 |Methods|`snake_case`|
 |Variables|`snake_case`|
+|Namespaces|`snake_case`|
 |Global constants|`KPacalCase`|
 |Macros|`SCREAMING_SNAKE_CASE`|
 
@@ -60,3 +61,40 @@ Special methods like constructor and destructor can ignore this rule.
 
 Avoid using multi-line comments, 
 as they make the code ugly by basically having two different ways of declaring comments.
+
+## LIBRARY NOTES
+Small libraries can have both declaration and implementation in a single `.hpp`,
+so can be compiled at the same time.
+
+Otherwise, declaration and implementation must be in separated files.
+
+## NAMESPACE NOTES
+Use, when possible, a similar namespace structure to this:
+- `general_namespace`
+  - `constants_namespace`
+  - `Class`
+  - `exception_namespace`
+  - `free_functions_namespace`
+
+## HEADER FILES
+Header files must be self contained. 
+Only the declaration should be present here.
+If a inline function is declarated, must be defined in the same file.
+
+Favor the use of `#pragma once` over classic inclusion guards.
+The vast majority of commonly used compilers support it, so unless you need to compile on a very specific platform, this rule should be followed.
+
+Avoid the usage of fordward declaration when possible.
+
+Include only what you use. Avoid including headers that are only needed on the implementation.
+
+Use angle-bracketed includes only in std headers and system headers.
+
+The order of `#include` should be the next (with a blank line between them):
+
+- Other project's `.hpp` files.
+- Your project's `.hpp` files.
+- System headers `.h` files.
+- Standard library headers (without file extension)
+
+## STANDARD LIBRARY
