@@ -7,24 +7,34 @@ It's heavily inspired by the Google C++ style guide and the Rust style guide.
 My goal is to make programming in C++ feel modern, comfortable, and enjoyable. 
 Therefore, I will continue to update this guide as I learn more or find better options.
 
+## FILE EXTENSION
+|File|Extension|
+|---|---|
+|Implementation file|`.cpp`|
+|Header file|`.hpp`|
+|Template implementation file|`.tpp`|
+
+Avoid the usage of tpp files, 
+instead put all the template implementation inside the hpp
+
 ## NAMING
 |Item|Case|
-|------|----|
-|Project|kebab-case|
-|Files|snake_case|
-|Types|PascalCase|
-|enums|PascalCase|
-|class/struct|PascalCase|
-|functions|snake_case|
-|methods|snake_case|
-|variables|snake_case|
-|Global constants|KPacalCase|
-|macros|SCREAMING_SNAKE_CASE|
+|---|---|
+|Project|`kebab-case`|
+|Files|`snake_case`|
+|Types|`PascalCase`|
+|Enums|`PascalCase`|
+|Class/struct|`PascalCase`|
+|Functions|`snake_case`|
+|Methods|`snake_case`|
+|Variables|`snake_case`|
+|Global constants|`KPacalCase`|
+|Macros|`SCREAMING_SNAKE_CASE`|
 
 ## INDENTATION
 Always 2 spaces instead of tabulations.
 
-**Anything in the code should have more than 4 indentations.**
+**Anything in the code should have less than 4 indentations.**
 If you need more than 4, you are probably doing something wrong.
 
 Even when a column cap of 80 looks pretty neat, 
