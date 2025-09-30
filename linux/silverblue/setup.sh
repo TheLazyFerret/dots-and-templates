@@ -38,7 +38,7 @@ parse_arguments() {
   done
 }
 
-# return 0 if false, return 1 if true.
+# Return 0 if false, return 1 if true.
 is_ostree_busy() {
   state=$(rpm-ostree status | grep State | awk '{print $2}')
   if [ $state = "busy" ]; then
@@ -56,9 +56,25 @@ update_system() {
   rpm-ostree update
 }
 
+# Enable flafhub remote
+enable_flathub_remote() {
+  # if exists, will not be empty
+  exist=$(flatpak remote-list --show-disabled | grep flathub)
+  if [ -z $exist ]; then
+    echo "Flathub doesn't exist!"
+  fi
+  # if disabled, will not be empty
+  enabled=$(flatpak remote-list --show-disabled | grep -E 'flathub\s+.*disabled.*')
+  if [ -z $enabled ]; then
+    echo "Flathub is already enable"
+  fi
+  flatpak remote-modify --enable flathub
+  echo "Flathub enabled"
+}
+
 # Uninstall fedora flatpaks.
 uninstall_fedora_flatpak() {
-  packages_to_uninstall=$(flatpak list --columns=application,origin | tail -n +2 | grep fedora | awk '{print $1}')
+  packages_to_uninstall=$(flatpak list --columns=application,origin | grep fedora | awk '{print $1}')
   number_of_packages_uninstalled=0
   if [ -z "$packages_to_uninstall" ]; then
     echo "Not packages to uninstall!"
@@ -82,7 +98,7 @@ disable_fedora_remote() {
   done
 }
 
-# Auxiliar function to ask uninstall confirmation for fedora flatpaks.
+# Auxiliar function for uninstalling confirmation for fedora flatpaks.
 uninstall_fedora_flatpak_confirmation() {
   while true; do
     read -e -p "Uninstall all fedora flatpaks? y/n: " -n 1
@@ -95,12 +111,25 @@ uninstall_fedora_flatpak_confirmation() {
   done
 }
 
-# Auxiliar function to ask disable confirmation for fedora remote
+# Auxiliar function for disabling confirmation for fedora remote.
 disable_fedora_remote_confirmation() {
   while true; do
     read -e -p "Disable fedora flatpak remote(requires root)? y/n: " -n 1
     if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
       disable_fedora_remote
+      return 0
+    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      return 0
+    fi
+  done
+}
+
+# Auxiliar function for enabling confirmation for flathub remote.
+enable_flathub_remote_confirmation() {
+  while true; do
+    read -e -p "Enable flathub remote(requires root)? y/n: " -n 1
+    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+      enable_flathub_remote
       return 0
     elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
       return 0
