@@ -125,7 +125,7 @@ Be consistent.
 
 Although currently there are many ways of handaling errors, you should always try to the same approach throughout the project.
 
-E.g, don't mix `std::exception` with `std::expected`.
+E.g: don't mix `std::exception` with `std::expected`.
 
 ###  POINTERS
 Consider using smart pointers (`std::unique_ptr` and `std::shared_ptr`) over traditional pointers.
