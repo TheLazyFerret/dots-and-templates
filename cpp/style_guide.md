@@ -100,10 +100,10 @@ Use angle-bracketed includes only in std headers and system headers.
 
 The order of `#include` should be the next (with a blank line between them):
 
-- Other project's `.hpp` files.
-- Your project's `.hpp` files.
 - System headers `.h` files.
 - Standard library headers (without file extension)
+- Other project's `.hpp` files.
+- Your project's `.hpp` files.
 
 ## C++ VERSION
 For new projects, target the new standard c++23.
