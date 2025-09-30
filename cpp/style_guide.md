@@ -7,6 +7,9 @@ It's heavily inspired by the Google C++ style guide and the Rust style guide.
 My goal is to make programming in C++ feel modern, comfortable, and enjoyable. 
 Therefore, I will continue to update this guide as I learn more or find better options.
 
+## PROPRAMMING PARADIGM
+Use object oriented programming. Free functions, although allowed, are discouraged.
+
 ## FILE EXTENSION
 |File|Extension|
 |---|---|
@@ -14,8 +17,8 @@ Therefore, I will continue to update this guide as I learn more or find better o
 |Header file|`.hpp`|
 |Template implementation file|`.tpp`|
 
-Avoid the usage of tpp files, 
-instead put all the template implementation inside the hpp.
+Avoid the usage of template implementation files; 
+instead, put the implementation inside the `.hpp`.
 
 Every `.cpp` should have an associated `.hpp`.
 
@@ -107,7 +110,7 @@ For new projects, target the new standard c++23.
 
 ### LOOPS
 Try to use always memory safe loops.
-Although not a strict rule, use this list as a way to order loop types. 
+Although not a strict rule, use this list as a way to order loop types (starting with the safest option):
 - `for (element : container)`
 - `for (auto iter = begin; iter != end; ++iter)`
 - `for (variable; condition; updation)` 
@@ -117,4 +120,9 @@ Be consistent.
 
 Although currently there are many ways of handaling errors, you should always try to the same approach throughout the project.
 
-E.g, don't mix `std::exception` with s`td::expected`.
+E.g, don't mix `std::exception` with `std::expected`.
+
+###  POINTERS
+Consider using smart pointers (`std::unique_ptr` and `std::shared_ptr`) over traditional pointers.
+
+Avoid the usage of `void*` pointers at all.
