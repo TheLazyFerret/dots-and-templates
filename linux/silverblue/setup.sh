@@ -147,7 +147,9 @@ update_system
 if [ $ASSUME_YES = "true" ]; then
   uninstall_fedora_flatpak
   disable_fedora_remote
+  enable_flathub_remote
 else
   uninstall_fedora_flatpak_confirmation
   disable_fedora_remote_confirmation
+  enable_flathub_remote_confirmation
 fi
