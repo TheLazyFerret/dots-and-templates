@@ -38,22 +38,17 @@ parse_arguments() {
   done
 }
 
-# Return 0 if false, return 1 if true.
-is_ostree_busy() {
-  state=$(rpm-ostree status | grep State | awk '{print $2}')
-  if [ $state = "busy" ]; then
-    return 1
-  else 
-    return 0
-  fi
-}
-
 # Update system.
 update_system() {
-  while [ is_ostree_busy -nq 0 ]; do
-    sleep 10
+  while true; do
+    state=$(rpm-ostree status | grep State | awk '{print $2}')
+    if [ $state = "busy" ]; then
+      sleep 10
+    else
+      rpm-ostree update
+      return 0
+    fi
   done
-  rpm-ostree update
 }
 
 # Enable flafhub remote
