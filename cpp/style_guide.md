@@ -13,6 +13,8 @@ Therefore, I will continue to update this guide as I learn more or find better o
 ## PROPRAMMING PARADIGM
 Use object oriented programming. Free functions, although allowed, are discouraged.
 
+The principle of composition over inheritance will be followed.
+
 ## FILE EXTENSION
 |File|Extension|
 |---|---|
