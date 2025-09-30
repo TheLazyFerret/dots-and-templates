@@ -2,7 +2,10 @@
 The purpose of this style guide is solely to serve as a general guide for my own projects. 
 It's not really intended for use by others, but feel free to do so.
 
-It's heavily inspired by the Google C++ style guide and the Rust style guide.
+It's heavily inspired by the
+[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) 
+guide and the 
+[Rust Style Guide](https://doc.rust-lang.org/beta/style-guide/index.html).
 
 My goal is to make programming in C++ feel modern, comfortable, and enjoyable. 
 Therefore, I will continue to update this guide as I learn more or find better options.
@@ -100,10 +103,10 @@ Use angle-bracketed includes only in std headers and system headers.
 
 The order of `#include` should be the next (with a blank line between them):
 
-- System headers `.h` files.
-- Standard library headers (without file extension)
 - Other project's `.hpp` files.
 - Your project's `.hpp` files.
+- System headers `.h` files.
+- Standard library headers (without file extension)
 
 ## C++ VERSION
 For new projects, target the new standard c++23.
