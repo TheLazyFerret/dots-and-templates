@@ -40,7 +40,7 @@ parse_arguments() {
 
 # Uninstall fedora flatpaks
 uninstall_fedora_flatpak() {
-  packages_to_uninstall=$(flatpak list --columns=application,origin | tail -n +1 | grep fedora | awk '{print $1}')
+  packages_to_uninstall=$(flatpak list --columns=application,origin | tail -n +2 | grep fedora | awk '{print $1}')
   number_of_packages_uninstalled=0
   if [ -z "$packages_to_uninstall" ]; then
     echo "Not packages to uninstall!"
