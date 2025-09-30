@@ -45,7 +45,9 @@ update_system() {
     if [ $state = "busy" ]; then
       sleep 10
     else
-      rpm-ostree update
+      echo -n "Updating system..."
+      rpm-ostree update > /dev/null 2>&1
+      echo " Done"
       return 0
     fi
   done
@@ -124,7 +126,7 @@ disable_fedora_remote_confirmation() {
 # Auxiliar function for enabling confirmation for flathub remote.
 enable_flathub_remote_confirmation() {
   while true; do
-    read -e -p "Enable flathub remote(requires root)? y/n: " -n 1
+    read -e -p "Enable flathub flatpak remote(requires root)? y/n: " -n 1
     if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
       enable_flathub_remote
       return 0
