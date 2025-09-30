@@ -60,16 +60,18 @@ update_system() {
 enable_flathub_remote() {
   # if exists, will not be empty
   exist=$(flatpak remote-list --show-disabled | grep flathub)
-  if [ -z $exist ]; then
-    echo "Flathub doesn't exist!"
-  fi
-  # if disabled, will not be empty
   enabled=$(flatpak remote-list --show-disabled | grep -E 'flathub\s+.*disabled.*')
-  if [ -z $enabled ]; then
+  if [ -z "$exist" ]; then
+    echo "Flathub doesn't exist!"
+    return 1
+  # if disabled, will not be empty
+  elif [ -z "$enabled" ]; then
     echo "Flathub is already enable"
+    return 1
+  else
+    flatpak remote-modify --enable flathub
+    echo "Flathub enabled"
   fi
-  flatpak remote-modify --enable flathub
-  echo "Flathub enabled"
 }
 
 # Uninstall fedora flatpaks.
