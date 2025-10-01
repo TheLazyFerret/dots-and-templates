@@ -129,6 +129,11 @@ install_flathub_selection() {
   done
 }
 
+# Function for save the new flathub selection.
+save_flathub_selection() {
+  flatpak list --app --columns=ref | tail -n +1 > $FLATPAK_LIST
+}
+
 # Auxiliar function for uninstalling confirmation for fedora flatpaks.
 uninstall_fedora_flatpak_confirmation() {
   while true; do
@@ -181,12 +186,12 @@ install_flathub_selection_confirmation() {
   done
 }
 
-# Function for saving the new flathub apps list.
-save_flathub_selection() {
+# Auxiliar function for saving the new flathub apps list.
+save_flathub_selection_confirmation() {
   while true; do
     read -e -p "Save the new flathub selection? y/n: " -n 1
     if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
-      flatpak list --app --columns=ref | tail -n +1 >> $FLATPAK_LIST
+      save_flathub_selection
       return 0
     elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
       return 0
@@ -204,6 +209,7 @@ if [ $ASSUME_YES = "true" ]; then
   disable_fedora_remote
   enable_flathub_remote
   install_flathub_selection
+  save_flathub_selection
 else
   uninstall_fedora_flatpak_confirmation
   disable_fedora_remote_confirmation
