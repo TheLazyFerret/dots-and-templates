@@ -4,7 +4,12 @@
 #   0 -> true 
 #   1 -> false
 
-is_ostree_busy() {
+### CONSTANTS
+LAYER_PACKAGES="distrobox steam-devices"
+OVERRIDE_PACKAGES="firefox firefox-langpacks"
+
+### FUNCTIONS
+wait_ostree_busy() {
   while true; do
     state=$(rpm-ostree status | grep -i state | awk '{print $1}')
     if [ "$state" = "busy" ]; then
@@ -66,3 +71,35 @@ is_remote_added() {
   done
   return 1
 }
+
+update_ostree() {
+  wait_ostree_busy
+  echo -n "Updating system..."
+  rpm-ostree update > /dev/null 2>&1
+  echo " Done"
+  return 0
+}
+
+install_layers_ostree() {
+  wait_ostree_busy
+  echo -n "Installing layered packages..."
+  if ! rpm-ostree install "$LAYER_PACKAGES" > /dev/null 2>&1; then
+    echo " Found an error!"
+    return 1
+  fi
+  echo " Done"
+  return 0
+}
+
+remove_overrides_ostree() {
+  wait_ostree_busy
+  echo -n "Removing override packages..."
+  if ! rpm-ostree override remove "$OVERRIDE_PACKAGES" > /dev/null 2>&1; then
+    echo " Found an error!"
+    return 1
+  fi
+  echo " Done"
+  return 0
+}
+
+### MAIN
