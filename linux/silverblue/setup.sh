@@ -9,6 +9,9 @@ FEDORA_REMOTES="fedora fedora-testing"
 # Name of the file who stores the flatpak list.
 FLATPAK_LIST="flatpak_list"
 
+OSTREE_OVERRIDE_REMOVE_LIST="firefox firefox-langpacks"
+OSTREE_LAYERED_INSTALL_LIST="distrobox steam-devices"
+
 # Function to check if all dependencies are installed.
 check_dependencies() {
   dependency_not_found="false"
@@ -51,6 +54,40 @@ update_system() {
       rpm-ostree update > /dev/null 2>&1
       echo " Done"
       return 0
+    fi
+  done
+}
+
+# Install the layered packages
+install_layer_ostree() {
+  while true; do
+    state=$(rpm-ostree status | grep State | awk '{print $2}')
+    if [ $state = "busy" ]; then
+      sleep 10
+    else
+      echo -n "Installing the packages $OSTREE_LAYERED_INSTALL_LIST..."
+      if ! rpm-ostree install "$OSTREE_LAYERED_INSTALL_LIST"; then
+        echo " Error (not changes have been made)"
+      else
+        echo " Done"
+      fi
+    fi
+  done
+}
+
+# Remove the packages from the base
+remove_override_ostree() {
+  while true; do
+    state=$(rpm-ostree status | grep State | awk '{print $2}')
+    if [ $state = "busy" ]; then
+      sleep 10
+    else
+      echo -n "Removing the packages $OSTREE_OVERRIDE_REMOVE_LIST..."
+      if ! rpm-ostree override remove "$OSTREE_OVERRIDE_REMOVE_LIST"; then
+        echo " Error (not changes have been made)"
+      else
+        echo " Done"
+      fi
     fi
   done
 }
@@ -138,12 +175,17 @@ save_flathub_selection() {
 uninstall_fedora_flatpak_confirmation() {
   while true; do
     read -e -p "Uninstall all fedora flatpaks? y/n: " -n 1
-    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+    case $REPLY in
+    [yY]) 
       uninstall_fedora_flatpak
       return 0
-    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then 
+      ;;
+    [nN])
       return 0
-    fi
+      ;;
+    *)
+      return 0
+    esac
   done
 }
 
@@ -151,12 +193,17 @@ uninstall_fedora_flatpak_confirmation() {
 disable_fedora_remote_confirmation() {
   while true; do
     read -e -p "Disable fedora flatpak remote(requires root)? y/n: " -n 1
-    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+    case $REPLY in
+    [yY]) 
       disable_fedora_remote
       return 0
-    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      ;;
+    [nN])
       return 0
-    fi
+      ;;
+    *)
+      return 0
+    esac
   done
 }
 
@@ -164,25 +211,35 @@ disable_fedora_remote_confirmation() {
 enable_flathub_remote_confirmation() {
   while true; do
     read -e -p "Enable flathub flatpak remote(requires root)? y/n: " -n 1
-    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+    case $REPLY in
+    [yY]) 
       enable_flathub_remote
       return 0
-    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      ;;
+    [nN])
       return 0
-    fi
+      ;;
+    *)
+      continue
+    esac
   done
 }
 
 # Auxiliar function for installing confirmation of flathub selection.
 install_flathub_selection_confirmation() {
   while true; do
-    read -e -p "Install flathub selection? y/n: " -n 1
-    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+    read -e -p "Install the flathub apps selection? y/n: " -n 1
+    case $REPLY in
+    [yY]) 
       install_flathub_selection
       return 0
-    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      ;;
+    [nN])
       return 0
-    fi
+      ;;
+    *)
+      continue
+    esac
   done
 }
 
@@ -190,19 +247,43 @@ install_flathub_selection_confirmation() {
 save_flathub_selection_confirmation() {
   while true; do
     read -e -p "Save the new flathub selection? y/n: " -n 1
-    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+    case $REPLY in
+    [yY]) 
       save_flathub_selection
       return 0
-    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      ;;
+    [nN])
       return 0
-    fi
+      ;;
+    *)
+      continue
+    esac
+  done 
+}
+
+# Auxiliar function for applying the changes in rpm-ostree.
+apply_ostree_changes() {
+  while true; do
+    read -e -p "Make changes in ostree? y/n: " -n 1
+    case $REPLY in
+    [yY]) 
+      install_layer_ostree
+      remove_override_ostree
+      return 0
+      ;;
+    [nN])
+      return 0
+      ;;
+    *)
+      continue
+    esac
   done 
 }
 
 # Main program.
 check_dependencies
 parse_arguments "$@"
-pdate_system
+update_system
 
 if [ $ASSUME_YES = "true" ]; then
   uninstall_fedora_flatpak
@@ -210,10 +291,14 @@ if [ $ASSUME_YES = "true" ]; then
   enable_flathub_remote
   install_flathub_selection
   save_flathub_selection
+
+  install_layer_ostree
+  remove_override_ostree
 else
   uninstall_fedora_flatpak_confirmation
   disable_fedora_remote_confirmation
   enable_flathub_remote_confirmation
   install_flathub_selection_confirmation
   save_flathub_selection
+  apply_ostree_changes
 fi
