@@ -6,6 +6,8 @@ DEPENDENCIES="awk flatpak rpm-ostree tail grep"
 ASSUME_YES="false"
 # Fedora remotes list.
 FEDORA_REMOTES="fedora fedora-testing"
+# Name of the file who stores the flatpak list.
+FLATPAK_LIST="flatpak_list"
 
 # Function to check if all dependencies are installed.
 check_dependencies() {
@@ -76,7 +78,7 @@ uninstall_fedora_flatpak() {
   packages_to_uninstall=$(flatpak list --columns=application,origin | grep fedora | awk '{print $1}')
   number_of_packages_uninstalled=0
   if [ -z "$packages_to_uninstall" ]; then
-    echo "Not packages to uninstall!"
+    echo "Not fedora flatpak packages to uninstall!"
     return 0
   fi
   for i in $packages_to_uninstall; do
@@ -99,6 +101,29 @@ disable_fedora_remote() {
     else
       echo "The remote $i is already disabled."
       continue
+    fi
+  done
+}
+
+install_flathub_selection() {
+  if [ ! -f "$FLATPAK_LIST" ]; then
+    echo "file $FLATPAK_LIST not found"
+    return 1
+  fi
+  is_available=$(flatpak remotes | grep -E 'flathub')
+  if [ -z "$is_available" ]; then
+    echo "The remote flathub is not available."
+    return 1
+  fi
+  for i in $(cat $FLATPAK_LIST | sort ); do
+    # if is not empty, it is installed
+    is_installed=$(flatpak list --columns=ref | grep $i)
+    if [ ! -z "$is_installed" ]; then
+      echo "The reference $i is already installed."
+      continue
+    fi
+    if ! flatpak install --assumeyes flathub "$i" > /dev/null 2>&1; then
+      echo "Error installing $i."
     fi
   done
 }
@@ -142,17 +167,31 @@ enable_flathub_remote_confirmation() {
   done
 }
 
+install_flathub_selection_confirmation() {
+  while true; do
+    read -e -p "Install flathub selection? y/n: " -n 1
+    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+      install_flathub_selection
+      return 0
+    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      return 0
+    fi
+  done
+}
+
 # Main program.
 check_dependencies
 parse_arguments "$@"
-update_system
+pdate_system
 
 if [ $ASSUME_YES = "true" ]; then
   uninstall_fedora_flatpak
   disable_fedora_remote
   enable_flathub_remote
+  install_flathub_selection
 else
   uninstall_fedora_flatpak_confirmation
   disable_fedora_remote_confirmation
   enable_flathub_remote_confirmation
+  install_flathub_selection_confirmation
 fi
