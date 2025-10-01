@@ -105,6 +105,7 @@ disable_fedora_remote() {
   done
 }
 
+# Install the flathub selection from FLATPAK_LIST
 install_flathub_selection() {
   if [ ! -f "$FLATPAK_LIST" ]; then
     echo "file $FLATPAK_LIST not found"
@@ -167,6 +168,7 @@ enable_flathub_remote_confirmation() {
   done
 }
 
+# Auxiliar function for installing confirmation of flathub selection.
 install_flathub_selection_confirmation() {
   while true; do
     read -e -p "Install flathub selection? y/n: " -n 1
@@ -177,6 +179,19 @@ install_flathub_selection_confirmation() {
       return 0
     fi
   done
+}
+
+# Function for saving the new flathub apps list.
+save_flathub_selection() {
+  while true; do
+    read -e -p "Save the new flathub selection? y/n: " -n 1
+    if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
+      flatpak list --app --columns=ref | tail -n +1 >> $FLATPAK_LIST
+      return 0
+    elif [ $REPLY = "n" ] || [ $REPLY = "N" ]; then
+      return 0
+    fi
+  done 
 }
 
 # Main program.
@@ -194,4 +209,5 @@ else
   disable_fedora_remote_confirmation
   enable_flathub_remote_confirmation
   install_flathub_selection_confirmation
+  save_flathub_selection
 fi
