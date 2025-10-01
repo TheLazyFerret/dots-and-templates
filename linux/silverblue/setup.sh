@@ -63,11 +63,11 @@ enable_flathub_remote() {
     return 1
   # if disabled, will not be empty
   elif [ -z "$enabled" ]; then
-    echo "Flathub is already enable"
+    echo "Flathub is already enabled."
     return 1
   else
     flatpak remote-modify --enable flathub
-    echo "Flathub enabled"
+    echo "Flathub correctly enabled."
   fi
 }
 
@@ -83,16 +83,22 @@ uninstall_fedora_flatpak() {
     flatpak uninstall --delete-data --force-remove --assume-yes $i
     number_of_packages_uninstalled=$(( number_of_packages_uninstalled + 1 ))
   done
-  echo "Uninstalled $number_of_packages_uninstalled packages and runtimes"
+  echo "Uninstalled $number_of_packages_uninstalled packages and runtimes."
 }
 
 # Disable fedora flatpak remote.
 disable_fedora_remote() {
   for i in $FEDORA_REMOTES; do
-    if ! flatpak remote-modify --disable $i 2>/dev/null; then
-      echo "Error disabling the remote: $i"
+    is_disabled=$(flatpak remotes --show-disabled | grep -E "^$i\s+.*disabled.*$")
+    if [ -z is_disabled ]; then
+      if $(flatpak remote-modify --disable $i 2>/dev/null); then
+        echo "Remote $i correctly disabled."
+      else
+        echo "Error disabling the remote $i."
+      fi
     else
-      echo "Correctly disabled the remote: $i"
+      echo "The remote $i is already disabled."
+      continue
     fi
   done
 }
