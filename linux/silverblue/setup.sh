@@ -8,13 +8,14 @@
 LAYER_PACKAGES="distrobox steam-devices"
 OVERRIDE_PACKAGES="firefox firefox-langpacks"
 FLATPAK_LIST="flatpak_list"
+FEDORA_REMOTES="fedora fedora-testing"
 
 ### FUNCTIONS
 wait_ostree_busy() {
   while true; do
     state=$(rpm-ostree status | grep -i state | awk '{print $2}')
     if [ "$state" = "busy" ]; then
-      echo "rpm-ostree is busy, waiting"
+      echo "  rpm-ostree is busy, waiting"
       sleep 10
     else
       return 0
@@ -24,8 +25,8 @@ wait_ostree_busy() {
 
 is_package_layered() {
   layered_packages=$(rpm-ostree status | grep -i LayeredPackages | head -n 1 | awk '{for (i = 2; i <= NF; ++i) printf "%s ", $i} END {print""}')
-  for package in $layered_packages; do
-    if [ "$1" = "$package" ]; then # Found a coincidence
+  for i in $layered_packages; do
+    if [ "$1" = "$i" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -34,8 +35,8 @@ is_package_layered() {
 
 is_package_overrided() {
   overrided_packages=$(rpm-ostree status | grep -i RemovedBasePackages | head -n 1 | awk '{for (i = 2; i <= NF; ++i) printf "%s ", $i} END {print""}')
-  for package in $overrided_packages; do
-    if [ "$1" = "$package" ]; then # Found a coincidence
+  for i in $overrided_packages; do
+    if [ "$1" = "$i" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -44,8 +45,8 @@ is_package_overrided() {
 
 is_ref_installed() { # ref # package
   installed_refs=$(flatpak list --columns=ref,origin | grep flathub | awk '{print $1}')
-  for ref in $installed_refs; do
-    if [ "$1" = "$ref" ]; then # Found a coincidence
+  for i in $installed_refs; do
+    if [ "$1" = "$i" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -54,8 +55,8 @@ is_ref_installed() { # ref # package
 
 is_remote_enabled() {
   active_remotes=$(flatpak remotes | awk '{print $1}')
-  for remote in $active_remotes; do
-    if [ "$1" = "$remote" ]; then # Found a coincidence
+  for i in $active_remotes; do
+    if [ "$1" = "$i" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -64,8 +65,8 @@ is_remote_enabled() {
 
 is_remote_added() {
   added_remotes=$(flatpak remotes --show-disabled  | awk '{print $1}')
-  for remote in $added_remotes; do
-    if [ "$1" = "$remote" ]; then # Found a coincidence
+  for i in $added_remotes; do
+    if [ "$1" = "$i" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -74,25 +75,25 @@ is_remote_added() {
 
 update_ostree() {
   wait_ostree_busy
-  echo -n "Updating system..."
+  echo -n "  Updating system..."
   rpm-ostree update > /dev/null 2>&1
   echo " Done"
   return 0
 }
-
-install_layers_ostree() {
+z
+layers_install_ostree() {
   aux=""
-  for package in $LAYER_PACKAGES; do
-    if ! is_package_layered "$package"; then
-      aux="$aux $package"
+  for i in $LAYER_PACKAGES; do
+    if ! is_package_layered "$i"; then
+      aux="$aux $i"
     fi
   done
   if [ -z "$aux" ]; then
-    echo "Not packages to install"
+    echo "  Not packages to install"
     return 0
   fi
   wait_ostree_busy
-  echo -n "Installing layered packages..."
+  echo -n "  Installing layered packages..."
   if ! rpm-ostree install "$aux" > /dev/null 2>&1; then
     echo " Found an error!"
     return 1
@@ -101,20 +102,20 @@ install_layers_ostree() {
   return 0
 }
 
-remove_overrides_ostree() {
+overrides_remove_ostree() {
   aux=""
-  for package in $OVERRIDE_PACKAGES; do
-    if ! is_package_overrided "$package"; then
-      aux="$aux $package"
+  for i in $OVERRIDE_PACKAGES; do
+    if ! is_package_overrided "$i"; then
+      aux="$aux $i"
     fi
   done
   if [ -z "$aux" ]; then
-    echo "Not packages to remove"
+    echo "  Not packages to remove"
     return 0
   fi
   wait_ostree_busy
-  echo -n "Removing override packages..."
-  if ! rpm-ostree override remove "$OVERRIDE_PACKAGES" > /dev/null 2>&1; then
+  echo -n "  Removing override packages..."
+  if ! rpm-ostree override remove "$aux" > /dev/null 2>&1; then
     echo " Found an error!"
     return 1
   fi
@@ -124,43 +125,43 @@ remove_overrides_ostree() {
 
 uninstall_flatpak_remote() { # remote
   if ! is_remote_added $1; then
-    echo "The remote is not in the remote list"
+    echo "  The remote $1 is not in the remote list"
     return 0
   elif ! is_remote_enabled $1; then
-    echo "The remote is disabled"
+    echo "  The remote $1 is disabled"
     return 0
   fi
-  package_list=$(flatpak list --all --columns=ref,origin | grep "$1" | awk '{print $1}')
+  package_list=$(flatpak list --columns=ref,origin | grep "$1" | awk '{print $1}')
   if [ -z "$package_list" ]; then
-    echo "Not packages to uninstall"
+    echo "  Not packages to uninstall"
     return 0
   fi
-  for package in $package_list; do
-    echo -n "Uninstalling $package..."
-    flatpak uninstall --delete-data --assumeyes "$package" "$1" > /dev/null 2>&1
+  for i in $package_list; do
+    echo -n "  Uninstalling $i..."
+    flatpak uninstall --delete-data --assumeyes "$i" > /dev/null 2>&1
     echo " Done"
   done
 }
 
 install_flatpak_selection() { # remote
   if ! is_remote_added $1; then
-    echo "The remote is not in the remote list"
+    echo "  The remote $1 is not in the remote list"
     return 1
   elif ! is_remote_enabled $1; then
-    echo "The remote is disabled"
+    echo "  The remote $1 is disabled"
     return 1
   elif [ ! -f "$FLATPAK_LIST" ]; then
-    echo "The file doesn't exist"
+    echo "  The file doesn't exist"
     return 1
   fi
   package_list=$(cat "$FLATPAK_LIST")
   if [ -z package_list ]; then
-    echo "Not packages to install"
+    echo "  Not packages to install"
     return 1
   fi
-  for package in $package_list; do
-    echo -n "Installing the ref $package..."
-    if flatpak install "$1" "$package" > /dev/null 2>&1 ; then
+  for i in $package_list; do
+    echo -n "  Installing the ref $i..."
+    if flatpak install "$1" "$i" > /dev/null 2>&1 ; then
       echo " Done"
     else
       echo " Fail"
@@ -170,14 +171,14 @@ install_flatpak_selection() { # remote
 
 toggle_flatpak_remote() { # remote
   if ! is_remote_added $1; then
-    echo "The remote $i is not in the remote list"
+    echo "  The remote $1 is not in the remote list"
     return 1
   elif is_remote_enabled $1; then
-    echo -n "Enabling the remote $1..."
+    echo -n "  Disabling the remote $1..."
     flatpak remote-modify --disable "$1" > /dev/null 2>&1
     echo " Done"
   else
-    echo -n "Disablinf the remote $1..."
+    echo -n "  Enabling the remote $1..."
     flatpak remote-modify --enable "$1" > /dev/null 2>&1
     echo " Done"
   fi
@@ -201,4 +202,24 @@ ask_confirmation() { # message
 }
 
 ### MAIN
-install_flatpak_selection flathub
+# OSTREE
+update_ostree
+layers_install_ostree
+overrides_remove_ostree
+
+# FLATPAK
+for remote in $FEDORA_REMOTES; do
+  if is_remote_enabled "$remote"; then
+    uninstall_flatpak_remote "$remote"
+    if ask_confirmation "Disable $remote remote? (requires root)"; then
+      toggle_flatpak_remote "$remote"
+    fi
+  fi
+done
+
+if ! is_remote_enabled "flathub"; then
+  if ask_confirmation "Enable flathub remote? (requires root)"; then
+    toggle_flatpak_remote "flathub"
+  fi
+fi
+install_flatpak_selection "flathub"
