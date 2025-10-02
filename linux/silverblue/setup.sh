@@ -10,7 +10,19 @@ OVERRIDE_PACKAGES="firefox firefox-langpacks"
 FLATPAK_LIST="flatpak_list"
 FEDORA_REMOTES="fedora fedora-testing"
 
+APPS_TO_HIDE="org.freedesktop.MalcontentControl.desktop org.gnome.SystemMonitor.desktop yelp.desktop org.gnome.Tour.desktop"
+
+DEPENDENCIES="rpm-ostree grep awk flatpak "
+
 ### FUNCTIONS
+check_dependencies() {
+  for i in $DEPENDENCIES; do
+    if ! type $i > /dev/null 2>&1; then
+      echo "  Dependency not found: $i"
+    fi
+  done
+}
+
 wait_ostree_busy() {
   while true; do
     state=$(rpm-ostree status | grep -i state | awk '{print $2}')
@@ -45,8 +57,8 @@ is_package_overrided() {
 
 is_ref_installed() { # ref # package
   installed_refs=$(flatpak list --columns=ref,origin | grep flathub | awk '{print $1}')
-  for i in $installed_refs; do
-    if [ "$1" = "$i" ]; then # Found a coincidence
+  for u in $installed_refs; do
+    if [ "$1" = "$u" ]; then # Found a coincidence
       return 0
     fi
   done
@@ -80,7 +92,7 @@ update_ostree() {
   echo " Done"
   return 0
 }
-z
+
 layers_install_ostree() {
   aux=""
   for i in $LAYER_PACKAGES; do
@@ -160,8 +172,12 @@ install_flatpak_selection() { # remote
     return 1
   fi
   for i in $package_list; do
-    echo -n "  Installing the ref $i..."
-    if flatpak install "$1" "$i" > /dev/null 2>&1 ; then
+    short_name=$(echo "$i" | cut -d '/' -f1)
+    echo -n "  Installing the ref $short_name..."
+    if is_ref_installed "$i"; then
+      echo " Already installed"
+      continue
+    elif flatpak install "$1" "$i" > /dev/null 2>&1 ; then
       echo " Done"
     else
       echo " Fail"
@@ -201,9 +217,21 @@ ask_confirmation() { # message
   done
 }
 
+hide_programs() {
+  for i in $APPS_TO_HIDE; do
+    if [ ! -f "$HOME/.local/share/applications/$i" ]; then
+      cp "/usr/share/applications/$i" "$HOME/.local/share/applications/$i" > /dev/null 2>&1
+    elif [ -z "$(cat $HOME/.local/share/applications/$i | grep NoDisplay)" ]; then
+      echo "NoDisplay=true" >> "$HOME/.local/share/applications/$i"
+      echo "  Correctly hidden the .desktop: $i"
+    fi
+  done
+}
+
 ### MAIN
+check_dependencies
 # OSTREE
-update_ostree
+#update_ostree
 layers_install_ostree
 overrides_remove_ostree
 
@@ -223,3 +251,5 @@ if ! is_remote_enabled "flathub"; then
   fi
 fi
 install_flatpak_selection "flathub"
+
+hide_programs
