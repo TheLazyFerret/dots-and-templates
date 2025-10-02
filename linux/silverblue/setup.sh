@@ -141,18 +141,37 @@ uninstall_flatpak_remote() { # remote
   done
 }
 
-disable_remote() { # remote
+toggle_flatpak_remote() { # remote
   if ! is_remote_added $1; then
-    echo "The remote is not in the remote list"
-    return 0
-  elif ! is_remote_enabled $1; then
-    echo "The remote is already disabled"
-    return 0
+    echo "The remote $i is not in the remote list"
+    return 1
+  elif is_remote_enabled $1; then
+    echo -n "Enabling the remote $1..."
+    flatpak remote-modify --disable "$1" > /dev/null 2>&1
+    echo " Done"
+  else
+    echo -n "Disablinf the remote $1..."
+    flatpak remote-modify --enable "$1" > /dev/null 2>&1
+    echo " Done"
   fi
+  return 0
 }
 
 ask_confirmation() { # message
-
+  while true; do
+    read -e -p "$1 y/n: " -n 1
+    case $REPLY in
+    [yY])
+      return 0
+      ;;
+    [nN])
+      return 1
+      ;;
+    *)
+      continue
+    esac
+  done
 }
 
 ### MAIN
+
