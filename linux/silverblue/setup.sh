@@ -14,6 +14,8 @@ APPS_TO_HIDE="org.freedesktop.MalcontentControl.desktop org.gnome.SystemMonitor.
 
 DEPENDENCIES="rpm-ostree grep awk flatpak "
 
+SYSTEMD_USER_SERVICES="podman.socket"
+
 ### FUNCTIONS
 check_dependencies() {
   for i in $DEPENDENCIES; do
@@ -228,10 +230,17 @@ hide_programs() {
   done
 }
 
+enable_user_services() {
+  for i in $SYSTEMD_USER_SERVICES; do
+    systemctl enable --user --now "$i" > /dev/null 2>&1
+    echo "  Enabled the systemd $i"
+  done
+}
+
 ### MAIN
 check_dependencies
 # OSTREE
-#update_ostree
+update_ostree
 layers_install_ostree
 overrides_remove_ostree
 
@@ -253,3 +262,4 @@ fi
 install_flatpak_selection "flathub"
 
 hide_programs
+enable_user_services
