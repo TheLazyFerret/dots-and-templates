@@ -129,12 +129,29 @@ uninstall_flatpak_remote() { # remote
     echo "The remote is already disabled"
     return 0
   fi
-  packages_to_remove=$(flatpak list --columns=ref,origin | grep "$1" | awk '{print $1}')
+  packages_to_remove=$(flatpak list --all --columns=ref,origin | grep "$1" | awk '{print $1}')
+  if [ -z "$packages_to_remove" ]; then
+    echo "Not packages to uninstall"
+    return 0
+  fi
   for package in $packages_to_remove; do
     echo -n "Uninstalling $package..."
     flatpak uninstall --delete-data --assumeyes "$package" "$1" > /dev/null 2>&1
     echo " Done"
   done
+}
+
+disable_remote() { # remote
+  if ! is_remote_added $1; then
+    echo "The remote is not in the remote list"
+    return 0
+  elif ! is_remote_enabled $1; then
+    echo "The remote is already disabled"
+    return 0
+  fi
+}
+
+ask_confirmation() { # message
 
 }
 
