@@ -7,6 +7,7 @@
 ### CONSTANTS
 LAYER_PACKAGES="distrobox steam-devices"
 OVERRIDE_PACKAGES="firefox firefox-langpacks"
+FLATPAK_LIST="flatpak_list"
 
 ### FUNCTIONS
 wait_ostree_busy() {
@@ -126,18 +127,44 @@ uninstall_flatpak_remote() { # remote
     echo "The remote is not in the remote list"
     return 0
   elif ! is_remote_enabled $1; then
-    echo "The remote is already disabled"
+    echo "The remote is disabled"
     return 0
   fi
-  packages_to_remove=$(flatpak list --all --columns=ref,origin | grep "$1" | awk '{print $1}')
-  if [ -z "$packages_to_remove" ]; then
+  package_list=$(flatpak list --all --columns=ref,origin | grep "$1" | awk '{print $1}')
+  if [ -z "$package_list" ]; then
     echo "Not packages to uninstall"
     return 0
   fi
-  for package in $packages_to_remove; do
+  for package in $package_list; do
     echo -n "Uninstalling $package..."
     flatpak uninstall --delete-data --assumeyes "$package" "$1" > /dev/null 2>&1
     echo " Done"
+  done
+}
+
+install_flatpak_selection() { # remote
+  if ! is_remote_added $1; then
+    echo "The remote is not in the remote list"
+    return 1
+  elif ! is_remote_enabled $1; then
+    echo "The remote is disabled"
+    return 1
+  elif [ ! -f "$FLATPAK_LIST" ]; then
+    echo "The file doesn't exist"
+    return 1
+  fi
+  package_list=$(cat "$FLATPAK_LIST")
+  if [ -z package_list ]; then
+    echo "Not packages to install"
+    return 1
+  fi
+  for package in $package_list; do
+    echo -n "Installing the ref $package..."
+    if flatpak install "$1" "$package" > /dev/null 2>&1 ; then
+      echo " Done"
+    else
+      echo " Fail"
+    fi
   done
 }
 
@@ -174,4 +201,4 @@ ask_confirmation() { # message
 }
 
 ### MAIN
-
+install_flatpak_selection flathub
