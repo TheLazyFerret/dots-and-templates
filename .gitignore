@@ -1,0 +1,14 @@
+# Private stuff
+.ssh/
+.cache/
+.local/
+
+# Shell stuff
+.history
+.bash_history
+
+# Text editor stuff
+*~
+*.swp
+*.swo
+*.tmp

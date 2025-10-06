@@ -1,0 +1,15 @@
+[package]
+name = "NAME"
+authors = ["NAME [NAME@DOMAIN]"]
+description = "SHORT DESCRIPTION"
+
+readme = "README FILE"
+license = "LICENSE TYPE"
+license-file = "LICENSE PATH"
+
+repository = "REPOSITORY URL"
+
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
