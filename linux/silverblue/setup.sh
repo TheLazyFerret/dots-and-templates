@@ -185,7 +185,7 @@ install_flatpak_selection() { # remote
     if is_ref_installed "$i"; then
       echo " Already installed"
       continue
-    elif flatpak install "$1" "$i" > /dev/null 2>&1 ; then
+    elif flatpak install -y "$1" "$i" > /dev/null 2>&1 ; then
       echo " Done"
     else
       echo " Fail"
@@ -230,7 +230,8 @@ hide_programs() {
     if [ ! -f "$HOME/.local/share/applications/$i" ]; then
       mkdir -p "$HOME/.local/share/applications" > /dev/null 2>&1
       cp "/usr/share/applications/$i" "$HOME/.local/share/applications/$i" > /dev/null 2>&1
-    elif [ -z "$(cat $HOME/.local/share/applications/$i | grep NoDisplay)" ]; then
+    fi
+    if [ -z "$(cat $HOME/.local/share/applications/$i | grep NoDisplay)" ]; then
       echo "NoDisplay=true" >> $HOME/.local/share/applications/$i
       echo "  Correctly hidden the .desktop: $i"
     fi
