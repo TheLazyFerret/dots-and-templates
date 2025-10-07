@@ -58,7 +58,7 @@ is_package_overrided() {
 }
 
 is_ref_installed() { # ref # package
-  installed_refs=$(flatpak list --columns=ref,origin | grep flathub | awk '{print $1}')
+  installed_refs=$(flatpak list --columns=ref,origin | awk '{print $1}')
   for u in $installed_refs; do
     if [ "$1" = "$u" ]; then # Found a coincidence
       return 0
@@ -169,7 +169,7 @@ install_flatpak_selection() { # remote
     return 1
   fi
   package_list=$(cat "$FLATPAK_LIST")
-  if [ -z package_list ]; then
+  if [ -z "$package_list" ]; then
     echo "  Not packages to install"
     return 1
   fi
@@ -222,6 +222,7 @@ ask_confirmation() { # message
 hide_programs() {
   for i in $APPS_TO_HIDE; do
     if [ ! -f "$HOME/.local/share/applications/$i" ]; then
+      mkdir -p "$HOME/.local/share/applications" > /dev/null 2>&1
       cp "/usr/share/applications/$i" "$HOME/.local/share/applications/$i" > /dev/null 2>&1
     elif [ -z "$(cat $HOME/.local/share/applications/$i | grep NoDisplay)" ]; then
       echo "NoDisplay=true" >> $HOME/.local/share/applications/$i
@@ -238,7 +239,7 @@ enable_user_services() {
 }
 
 add_flathub_remote() {
-  if is remote_added "flathub"; then
+  if is_remote_added "flathub"; then
     echo "  The remote flathub is already enabled"
   else
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
