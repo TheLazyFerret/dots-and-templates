@@ -146,11 +146,17 @@ uninstall_flatpak_remote() { # remote
     return 0
   fi
   package_list=$(flatpak list --columns=ref,origin | grep "$1" | awk '{print $1}')
+  runtime_list=$(flatpak list --runtime --columns=ref,origin | grep "$1" | awk '{print $1}')
   if [ -z "$package_list" ]; then
     echo "  Not packages to uninstall"
     return 0
   fi
   for i in $package_list; do
+    echo -n "  Uninstalling $i..."
+    flatpak uninstall --delete-data --assumeyes "$i" > /dev/null 2>&1
+    echo " Done"
+  done
+  for i in $runtime_list; do
     echo -n "  Uninstalling $i..."
     flatpak uninstall --delete-data --assumeyes "$i" > /dev/null 2>&1
     echo " Done"
