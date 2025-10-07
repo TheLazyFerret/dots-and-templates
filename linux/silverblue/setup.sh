@@ -108,7 +108,7 @@ layers_install_ostree() {
   fi
   wait_ostree_busy
   echo -n "  Installing layered packages..."
-  if ! rpm-ostree install "$aux" > /dev/null 2>&1; then
+  if ! rpm-ostree install $aux > /dev/null 2>&1; then
     echo " Found an error!"
     return 1
   fi
@@ -129,7 +129,7 @@ overrides_remove_ostree() {
   fi
   wait_ostree_busy
   echo -n "  Removing override packages..."
-  if ! rpm-ostree override remove "$aux" > /dev/null 2>&1; then
+  if ! rpm-ostree override remove $aux > /dev/null 2>&1; then
     echo " Found an error!"
     return 1
   fi
@@ -224,7 +224,7 @@ hide_programs() {
     if [ ! -f "$HOME/.local/share/applications/$i" ]; then
       cp "/usr/share/applications/$i" "$HOME/.local/share/applications/$i" > /dev/null 2>&1
     elif [ -z "$(cat $HOME/.local/share/applications/$i | grep NoDisplay)" ]; then
-      echo "NoDisplay=true" >> "$HOME/.local/share/applications/$i"
+      echo "NoDisplay=true" >> $HOME/.local/share/applications/$i
       echo "  Correctly hidden the .desktop: $i"
     fi
   done
@@ -235,6 +235,15 @@ enable_user_services() {
     systemctl enable --user --now "$i" > /dev/null 2>&1
     echo "  Enabled the systemd $i"
   done
+}
+
+add_flathub_remote() {
+  if is remote_added "flathub"; then
+    echo "  The remote flathub is already enabled"
+  else
+    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
+    echo " The remote flathub correctly enabled"
+  fi
 }
 
 ### MAIN
@@ -253,6 +262,12 @@ for remote in $FEDORA_REMOTES; do
     fi
   fi
 done
+
+if ! is_remote_added "flathub"; then
+  if ask_confirmation "Add flathub remote? (requires root)"; then
+    add_flathub_remote
+  fi
+fi
 
 if ! is_remote_enabled "flathub"; then
   if ask_confirmation "Enable flathub remote? (requires root)"; then
