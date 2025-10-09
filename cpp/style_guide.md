@@ -15,6 +15,8 @@ Use OOP for high-level entities, but prefer free functions for small utilities.
 
 The principle of composition over inheritance will be followed.
 
+The declaration and implementation, except for single-line implementations, will always be separate.
+
 ## FILE EXTENSION
 |File|Extension|
 |---|---|
