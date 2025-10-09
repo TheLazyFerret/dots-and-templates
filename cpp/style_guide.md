@@ -62,7 +62,15 @@ All files must include a [header comments](header_comment.hpp), with the next fi
 - License
 - Brief
 
-All function/method declaration must have brief comment.
+All function/method, in the implementation,
+must have a [brief comment](function_comment.hpp),
+with the next fields:
+- Brief
+- Param 1 type 
+- Param 2 type
+- ...
+- Return type
+
 Special methods like constructor and destructor can ignore this rule.
 
 |Item|Comment type|
