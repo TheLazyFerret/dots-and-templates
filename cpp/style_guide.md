@@ -58,22 +58,23 @@ Therefore, the soft column cap is 100 characters. The strict column cap is 120 c
 
 ## COMMENTS
 All files must include a [header comments](header_comment.hpp), with the next fields:
-- FileName
-- Author
-- Copyright
-- License
-- Brief
+- `FileName`
+- `Author`
+- `Copyright`
+- `License`
+- `Brief`
 
-All function/method, in the implementation,
-must have a [brief comment](function_comment.hpp),
-with the next fields:
-- Brief
-- Param 1 type 
-- Param 2 type
-- ...
-- Return type
+All functions and methods must include a [brief comment](function_comment.hpp) 
+in the implementation with the following fields:
+- `[brief]`
+-  `param:  [type]` 
+-  `param:  [type]`
+-  `...`
+-  `return: [type]`
 
-Special methods like constructor and destructor can ignore this rule.
+The `type` must always include the full namespace path.
+
+Special methods like default constructor and destructor can ignore this rule.
 
 |Item|Comment type|
 |---|---|
