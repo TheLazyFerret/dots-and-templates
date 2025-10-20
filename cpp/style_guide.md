@@ -17,6 +17,23 @@ The principle of composition over inheritance will be followed.
 
 The declaration and implementation, except for single-line implementations, will always be separate.
 
+## DIRECTORY STRUCTURE
+|Library||
+|---|---|
+|`include/`|Public header files.|
+|`src/`|Private headers and source files.|
+|`example/`|Example usage files.|
+|`docs/`|Documentation files.|
+
+|Program||
+|---|---|
+|`include/`|External header files.|
+|`src/`|Headers and source files of the program.|
+|`lib/`|External static and dynamic libraries.|
+|`docs/`|Documentation files.|
+
+*Each external project inside `include/` and `lib/` should be inside a subdirectory.*
+
 ## FILE EXTENSION
 |File|Extension|
 |---|---|
