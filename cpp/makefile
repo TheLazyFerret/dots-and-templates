@@ -8,23 +8,23 @@
 # Macros
 CXX         := g++
 CXXSTD      := c++23
-CXXFLAGS    := -Wall -Werror -pedantic -g -o3
-TARGET      := # Add target name.
+CXXFLAGS    := -Wall -pedantic -g -o3 -std=$(CXXSTD)
+TARGET      := 
 
-SRCS        := # Source files of the program.
+SRCS        := 
 OBJS        := $(SRCS:%.cc=%.o)
-INCL        := # Add -I$(INCL) if there are files to include.
+INCL        := 
 
 # Main target
 all: $(TARGET)
 
 # Linking
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -std=$(CXXSTD) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Object compilation
 %.o: %.cc
-	$(CXX) $(CXXFLAGS) -std=$(CXXSTD) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # clean
 clean:

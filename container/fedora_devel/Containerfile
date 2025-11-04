@@ -1,5 +1,6 @@
 FROM fedora:latest
 
+# podman run --read-only --mount type=bind,source=${HOME}/.ssh/,target=/root/.ssh,ro=true --name devel localhost/devel:latest
 ENV DOTFILES_REPO="https://github.com/TheLazyFerret/dots-and-templates.git"
 
 USER root
