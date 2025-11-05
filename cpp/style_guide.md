@@ -58,7 +58,7 @@ Every `.cpp` should have an associated `.hpp`.
 |Functions|`snake_case`|
 |Methods|`snake_case`|
 |Variables|`snake_case`|
-|Attributes|`snake_case_`|
+|Attributes|`snake_case`|
 |Namespaces|`snake_case`|
 |Global constants|`KPascalCase`|
 |Macros|`SCREAMING_SNAKE_CASE`|
