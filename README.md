@@ -5,12 +5,10 @@ templates and configs for various tools and projects.
 ## Directories
 |Directory||
 |---|---|
-|[common](./common/)|Miscellaneous agnostic project templates|
-|[container](./container/)|Miscellaneous docker and podman files|
-|[cpp](./cpp/)|Configs and templates related to c++ development|
-|[linux](./linux/)|Miscellaneous scripts and dotfiles|
-|[rust](.rust/)|Configs and templates related to rust development|
-|[vim](./vim/)|My personal vim config|
+|[container](./container/)|Personal dockerfiles.|
+|[cpp](./cpp/)|Configs and templates related to c++ development.|
+|[rust](.rust/)|Configs and templates related to rust development.|
+|[dots](./dots/)|Personal dotfiles for different programs.|
 
 ## License
 All the files in this repository are under the [MIT](LICENSE) license.
