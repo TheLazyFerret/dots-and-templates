@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Multiple aliases to make faster some operations with large commands
+# Source this file to add the aliases to your bash sesion
+
 # System update aliases
 alias sys-update='sudo emaint --auto sync'
 alias sys-upgrade='sudo emerge --ask --verbose --update --deep --changed-use --getbinpkg @world'
