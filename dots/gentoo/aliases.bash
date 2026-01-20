@@ -7,3 +7,4 @@
 alias sys-update='sudo emerge --sync'
 alias sys-upgrade='sudo emerge --ask --verbose --update --deep --changed-use --getbinpkg @world'
 alias sys-clean='sudo emerge --ask --depclean'
+alias sys-install='sudo emerge --ask'
