@@ -13,7 +13,7 @@ Therefore, I will continue to update this guide as I learn more or find better o
 ## PROPRAMMING PARADIGM
 Use OOP for high-level entities, but prefer free functions for small utilities.
 
-The principle of composition over inheritance will be followed.
+The principle of composition over inheritance should be followed.
 
 The declaration and implementation, except for single-line implementations, will always be separate.
 
@@ -74,7 +74,7 @@ it is too short for long declarations, especially when namespace resolutions are
 Therefore, the soft column cap is 100 characters. The strict column cap is 120 characters.
 
 ## COMMENTS
-All files must include a [header comments](header_comment.hpp), with the next fields:
+All files must include a [header comments](header_comment.hpp), with at least the next fields:
 - `FileName`
 - `Author`
 - `Copyright`
@@ -152,7 +152,7 @@ The order of `#include` should be the next (with a blank line between them):
 - Your project's `.hpp` files.
 
 ## C++ VERSION
-For new projects, target the new standard **c++23**.
+For new projects, target the new standard **c++23** or newer.
 
 ### LOOPS
 Try to use always memory safe loops.
@@ -164,17 +164,15 @@ Although not a strict rule, use this list as a way to order loop types (starting
 ### ERROR HANDLING
 Be consistent.
 
-Although currently there are many ways of handling errors, you should always try to the same approach throughout the project.
+Although currently there are many ways of handling errors,
+you should always try to the same approach throughout the project.
 
 E.g: don't mix `std::exception` with `std::expected`.
-
-Prefer the usage of `std::exception` for not critical code,
-to keep consisteny with the standard library.
 
 ###  POINTERS
 Consider using smart pointers (`std::unique_ptr` and `std::shared_ptr`) over traditional pointers.
 
-Avoid the usage of `void*` pointers at all.
+Avoid the usage of `void*` when possible.
 
 ### ENUMS
 Prefer the usage of `enum class` over traditional `enum`
