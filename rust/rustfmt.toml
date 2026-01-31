@@ -2,8 +2,8 @@
 edition = "2024"
 # Set the max width for each line.
 max_width = 100
-# When splitting multiple operations, put the operators at the end of the line (Unstable for now).
-# binop_separator = "Back"
+# Set the max width many things.
+use_small_heuristics = "Max"
 # Split the args horizontally.
 fn_params_layout = "Compressed"
 # Set the number of spaces per tab.
