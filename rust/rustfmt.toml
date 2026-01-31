@@ -2,7 +2,7 @@
 edition = "2024"
 # Set the max width for each line.
 max_width = 100
-# Set the max width many things.
+# Set the max width in many things.
 use_small_heuristics = "Max"
 # Split the args horizontally.
 fn_params_layout = "Compressed"
