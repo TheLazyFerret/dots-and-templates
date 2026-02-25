@@ -5,10 +5,7 @@ templates and configs for various tools and projects.
 ## Directories
 |Directory||
 |---|---|
-|[container](./container/)|Personal dockerfiles.|
-|[cpp](./cpp/)|Configs and templates related to c++ development.|
-|[rust](.rust/)|Configs and templates related to rust development.|
-|[dots](./dots/)|Personal dotfiles for different programs.|
+|[devel](./devel/)|Programming templates.|
 
 ## License
 All Files in this repository are under the [Unlicense license](https://unlicense.org/).
