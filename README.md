@@ -11,4 +11,4 @@ templates and configs for various tools and projects.
 |[dots](./dots/)|Personal dotfiles for different programs.|
 
 ## License
-All the files in this repository are under the [MIT](LICENSE) license.
+All Files in this repository are under the [Unlicense license](https://unlicense.org/).
