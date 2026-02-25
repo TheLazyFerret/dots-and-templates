@@ -1,0 +1,12 @@
+[package]
+name = "example"
+description = "example short description"
+authors = ["author name <optional@email>"]
+repository = "repository-url"
+categories = ["example"]
+version = "0.0.0"
+edition = "2024"
+readme = "README.md"
+license = "LICENSE TYPE"
+
+[dependencies]
